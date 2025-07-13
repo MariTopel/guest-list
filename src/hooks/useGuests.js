@@ -15,6 +15,32 @@ export default function useGuests() {
   const [error, setError] = useState(null); //the null is because by default there are no errors until it is updated to have one
 
   useEffect(() => {
-    const url = `${BASE_URL}/${COHORT}/guests`;
+    async function fetchGuests() {
+      try {
+        //this refferences and builds the URL
+        const url = `${BASE_URL}/${COHORT}/guests`;
+        //awaits the response from the API database
+        const response = await fetch(url);
+        //if the response is not good then say what the error is
+        if (!response.ok) {
+          throw new Error(`Network response was NOT OK ${response.status}`);
+        }
+
+        //await for the JSON
+        const json = await response.json();
+        //if the json is not a success then have the console say it didn't go through
+        if (!json.success) {
+          throw new Error(json.error?.message || "API did not return success");
+        }
+
+        setGuests(json.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGuests();
   }, []);
 }
