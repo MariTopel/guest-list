@@ -43,4 +43,8 @@ export default function useGuests() {
 
     fetchGuests();
   }, []);
+
+  //forgot to add the return lmao
+  //refferences guest instead og guests plural
+  return { guests, loading, error };
 }
